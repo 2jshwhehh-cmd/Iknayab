@@ -1889,6 +1889,27 @@
     display: flex;
   }
     }
+        
+/* Default logo size (desktop) */
+.logo-image {
+  height: 85px !important;   /* was 70px */
+  width: auto;
+  max-width: 100%;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .logo-image {
+    height: 75px !important; /* slightly smaller but still visible */
+  }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+  .logo-image {
+    height: 65px !important; /* larger than before */
+  }
+}
     </style>
 </head>
 <body>
