@@ -1521,6 +1521,30 @@
 .nav-logo:hover .logo-svg {
     transform: rotate(-5deg);
 }
+        html,body{overflow-x:hidden;}
+.hamburger-btn{display:none;background:transparent;border:none;cursor:pointer;padding:0.5rem;align-items:center;justify-content:center;}
+.hamburger-btn .bar{display:block;width:24px;height:2px;background:#111;margin:4px 0;transition:transform .25s ease,opacity .25s ease;}
+@media(max-width:900px){
+  .nav-links{position:absolute;top:64px;right:1rem;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.08);
+  flex-direction:column;display:none;width:calc(100% - 2rem);max-width:320px;z-index:2000;padding:0.5rem;}
+  .nav-links.open{display:flex;}
+  .hamburger-btn{display:flex;}
+  .nav-links .nav-link{width:100%;text-align:center;padding:0.75rem 1rem;border-radius:8px;}
+}
+.logo-image{height:80px;width:auto;max-width:100%;}
+@media(max-width:900px){.logo-image{height:56px;}}
+@media(max-width:480px){.logo-image{height:44px;}}
+@media(max-width:768px){
+.hero-title{font-size:2.4rem!important;}
+.hero-subtitle{font-size:1rem!important;max-width:92%!important;}
+.product-name{font-size:1.1rem!important;}
+.product-price{font-size:1.25rem!important;}
+.product-image{height:220px!important;}
+}
+@media(max-width:480px){
+.hero-title{font-size:1.8rem!important;}
+.product-image{height:180px!important;}
+                }
     </style>
 </head>
 <body>
@@ -1842,6 +1866,23 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <script>
+        function toggleMobileNav(){
+ const links=document.querySelector('.nav-links');
+ if(!links)return;
+ links.classList.toggle('open');
+ document.body.classList.toggle('nav-open');
+}
+document.addEventListener('click',e=>{
+ const links=document.querySelector('.nav-links');
+ const btn=document.querySelector('.hamburger-btn');
+ if(!links||!btn)return;
+ if(links.classList.contains('open')){
+   if(e.target.closest('.nav-link')){links.classList.remove('open');document.body.classList.remove('nav-open');}
+   if(!e.target.closest('.nav-links')&&!e.target.closest('.hamburger-btn')){
+     links.classList.remove('open');document.body.classList.remove('nav-open');
+   }
+ }
+});
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAPV-v1qdcMI2YsNqWhFghjWXKiRk2vRFM",
