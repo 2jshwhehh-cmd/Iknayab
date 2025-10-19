@@ -2028,7 +2028,106 @@
   font-size: 1.1rem !important;
   font-weight: 700 !important;
 }
+    
+
+.suggested-products {
+  margin: 4rem auto;
+  padding: 1.5rem;
+  max-width: 1200px;
+  background: #fafafa;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.suggested-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #111;
+  position: relative;
+}
+.suggested-title::after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background: #222;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.suggested-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+.suggested-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.suggested-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.suggested-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.suggested-card:hover img {
+  transform: scale(1.05);
+}
+.suggested-info {
+  padding: 1rem;
+}
+.suggested-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+  color: #222;
+}
+.suggested-price {
+  color: #ff6a00;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+.view-btn {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+.view-btn:hover {
+  background: #ff6a00;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .suggested-products {
+    padding: 1rem;
+  }
+  .suggested-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+  .suggested-card img {
+    height: 150px;
+  }
+}
 </style>
+<!-- End Modern Suggested Products Design -->
+
+
 <!-- END FINAL PRODUCT GRID + IMAGE FIX -->
 
 </head>
@@ -2162,6 +2261,10 @@
                 </div>
             </div>
         </div>
+<section class="suggested-products">
+  <h2 class="suggested-title">You may also like</h2>
+  <div class="suggested-grid" id="suggested-products"></div>
+</section>
 
         <!-- Image Modal -->
         <div id="image-modal" class="image-modal">
@@ -2974,6 +3077,34 @@ document.addEventListener('click',e=>{
                 event.preventDefault();
             }
         });
+
+        
+function loadSuggestedProducts(currentProductId) {
+  const productsRef = firebase.database().ref('products');
+  productsRef.once('value').then(snapshot => {
+    const allProducts = snapshot.val();
+    const productArray = Object.keys(allProducts)
+      .filter(id => id !== currentProductId)
+      .map(id => ({ id, ...allProducts[id] }));
+
+    const suggestions = productArray.sort(() => 0.5 - Math.random()).slice(0, 4);
+    const container = document.getElementById('suggested-products');
+
+    container.innerHTML = suggestions.map(p => `
+      <div class="suggested-card">
+        <img src="${p.imageUrl}" alt="${p.name}" />
+        <div class="suggested-info">
+          <div class="suggested-name">${p.name}</div>
+          <div class="suggested-price">Rs ${p.price}</div>
+          <a class="view-btn" href="product.html?id=${p.id}">View Product</a>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+loadSuggestedProducts(productId);
+
+
     </script>
 </body>
 </html>
