@@ -2139,6 +2139,43 @@
         gap: 0.8rem !important;
     }
 }
+    .suggested-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 1.5rem !important;
+}
+
+.suggested-card {
+    max-width: 100% !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+.suggested-card img {
+    height: 160px !important;
+    object-fit: cover !important;
+}
+
+@media (max-width: 768px) {
+    .suggested-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    .suggested-card img {
+        height: 140px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .suggested-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.8rem !important;
+    }
+    
+    .suggested-card img {
+        height: 120px !important;
+    }
+}
 </style>
 <!-- End Modern Suggested Products Design -->
 
