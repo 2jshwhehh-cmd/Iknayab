@@ -2243,6 +2243,53 @@
 .nav-link:hover::after, .nav-link.active::after {
     width: 80%;
 }
+    .hero-section {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.02) 0%, transparent 50%),
+        linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+}
+
+.hero-title {
+    color: #fff;
+    text-shadow: 2px 2px 0px #000, 4px 4px 0px rgba(255,255,255,0.1);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+    color: #ccc;
+    font-weight: 500;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    border: 2px solid #fff;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cta-button:hover {
+    background: linear-gradient(135deg, #333 0%, #000 100%);
+    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+}
 </style>
 <!-- End Modern Suggested Products Design -->
 
