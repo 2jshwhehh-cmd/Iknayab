@@ -2259,12 +2259,14 @@
                 <div id="product-detail-content">
                     <!-- Product details will be loaded here -->
                 </div>
-            </div>
-        </div>
+                
 <section class="suggested-products">
   <h2 class="suggested-title">You may also like</h2>
   <div class="suggested-grid" id="suggested-products"></div>
 </section>
+            </div>
+        </div>
+
 
         <!-- Image Modal -->
         <div id="image-modal" class="image-modal">
@@ -2671,46 +2673,52 @@ document.addEventListener('click',e=>{
         }
 
         // Navigation function
-        function navigateTo(page, productId = null) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Update nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show target page
-            const targetPage = document.getElementById(`${page}-page`);
-            if (targetPage) {
-                targetPage.classList.add('active');
-                
-                // Update active nav link
-                const navLink = document.querySelector(`.nav-link[onclick="navigateTo('${page}')"]`);
-                if (navLink) {
-                    navLink.classList.add('active');
-                }
-            }
-            
-            // Load specific page content
-            switch(page) {
-                case 'products':
-                    displayProducts(products);
-                    break;
-                case 'product-detail':
-                    if (productId) {
-                        loadProductDetail(productId);
-                    }
-                    break;
-                case 'checkout':
-                    if (productId) {
-                        loadCheckout(productId);
-                    }
-                    break;
-            }
+function navigateTo(page, productId = null) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Update nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Show target page
+    const targetPage = document.getElementById(`${page}-page`);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        
+        // Update active nav link
+        const navLink = document.querySelector(`.nav-link[onclick="navigateTo('${page}')"]`);
+        if (navLink) {
+            navLink.classList.add('active');
         }
+    }
+    
+    // Hide suggested products on other pages
+    const suggestedSection = document.getElementById('suggested-products-section');
+    if (suggestedSection) {
+        suggestedSection.style.display = page === 'product-detail' ? 'block' : 'none';
+    }
+    
+    // Load specific page content
+    switch(page) {
+        case 'products':
+            displayProducts(products);
+            break;
+        case 'product-detail':
+            if (productId) {
+                loadProductDetail(productId);
+            }
+            break;
+        case 'checkout':
+            if (productId) {
+                loadCheckout(productId);
+            }
+            break;
+    }
+}
 
         // Load product detail page with enhanced gallery
         function loadProductDetail(productId) {
@@ -2770,6 +2778,7 @@ document.addEventListener('click',e=>{
                     </div>
                 </div>
             `;
+            loadSuggestedProducts(productId);
         }
 
         // Change main image when thumbnail is clicked
@@ -3080,29 +3089,48 @@ document.addEventListener('click',e=>{
 
         
 function loadSuggestedProducts(currentProductId) {
-  const productsRef = firebase.database().ref('products');
-  productsRef.once('value').then(snapshot => {
-    const allProducts = snapshot.val();
-    const productArray = Object.keys(allProducts)
-      .filter(id => id !== currentProductId)
-      .map(id => ({ id, ...allProducts[id] }));
-
-    const suggestions = productArray.sort(() => 0.5 - Math.random()).slice(0, 4);
-    const container = document.getElementById('suggested-products');
-
-    container.innerHTML = suggestions.map(p => `
-      <div class="suggested-card">
-        <img src="${p.imageUrl}" alt="${p.name}" />
-        <div class="suggested-info">
-          <div class="suggested-name">${p.name}</div>
-          <div class="suggested-price">Rs ${p.price}</div>
-          <a class="view-btn" href="product.html?id=${p.id}">View Product</a>
-        </div>
-      </div>
-    `).join('');
-  });
+    const suggestedGrid = document.getElementById('suggested-products');
+    const section = document.getElementById('suggested-products-section');
+    
+    if (!suggestedGrid) return;
+    
+    // Show loading
+    suggestedGrid.innerHTML = '<div class="loading">Loading suggestions...</div>';
+    if (section) section.style.display = 'block';
+    
+    try {
+        // Filter out current product and get random 4 products
+        const filteredProducts = products.filter(p => p.id !== currentProductId);
+        const suggestions = filteredProducts
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 4);
+        
+        if (suggestions.length === 0) {
+            if (section) section.style.display = 'none';
+            return;
+        }
+        
+        // Display suggestions
+        suggestedGrid.innerHTML = suggestions.map(product => {
+            const mainImage = getProductImage(product);
+            return `
+                <div class="suggested-card" onclick="navigateTo('product-detail', '${product.id}')">
+                    <img src="${mainImage}" alt="${product.name}" />
+                    <div class="suggested-info">
+                        <div class="suggested-name">${product.name}</div>
+                        <div class="suggested-price">Rs ${product.price.toLocaleString()}</div>
+                        <div class="view-btn">View Product</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error('Error loading suggestions:', error);
+        if (section) section.style.display = 'none';
+    }
 }
-loadSuggestedProducts(productId);
+
 
 
     </script>
