@@ -2873,28 +2873,7 @@ function navigateTo(page, productId = null) {
     }
     
     // Hide suggested products on other pages
-    const suggestedSection = document.getElementById('suggested-products-section');
-    if (suggestedSection) {
-        suggestedSection.style.display = page === 'product-detail' ? 'block' : 'none';
-    }
-    
-    // Load specific page content
-    switch(page) {
-        case 'products':
-            displayProducts(products);
-            break;
-        case 'product-detail':
-            if (productId) {
-                loadProductDetail(productId);
-            }
-            break;
-        case 'checkout':
-            if (productId) {
-                loadCheckout(productId);
-            }
-            break;
-    }
-}
+
     
     // Hide suggested products on other pages
     const suggestedSection = document.getElementById('suggested-products-section');
