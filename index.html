@@ -2673,6 +2673,7 @@ document.addEventListener('click',e=>{
             try {
                 await loadProductsFromFirebase();
                 setupEventListeners();
+                checkUrlParameters();
                 console.log('Website initialized successfully');
             } catch (error) {
                 console.error('Error initializing app:', error);
@@ -2840,6 +2841,15 @@ document.addEventListener('click',e=>{
 
         // Navigation function
 function navigateTo(page, productId = null) {
+    // Update URL
+    let newUrl = `${window.location.origin}${window.location.pathname}`;
+    if (page === 'product-detail' && productId) {
+        newUrl += `?product=${productId}`;
+    } else if (page !== 'home') {
+        newUrl += `?page=${page}`;
+    }
+    window.history.pushState({}, '', newUrl);
+    
     // Hide all pages
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -2883,6 +2893,42 @@ function navigateTo(page, productId = null) {
                 loadCheckout(productId);
             }
             break;
+    }
+}
+    
+    // Hide suggested products on other pages
+    const suggestedSection = document.getElementById('suggested-products-section');
+    if (suggestedSection) {
+        suggestedSection.style.display = page === 'product-detail' ? 'block' : 'none';
+    }
+    
+    // Load specific page content
+    switch(page) {
+        case 'products':
+            displayProducts(products);
+            break;
+        case 'product-detail':
+            if (productId) {
+                loadProductDetail(productId);
+            }
+            break;
+        case 'checkout':
+            if (productId) {
+                loadCheckout(productId);
+            }
+            break;
+    }
+}
+        // Check URL parameters on page load
+function checkUrlParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product');
+    const page = urlParams.get('page');
+    
+    if (productId) {
+        navigateTo('product-detail', productId);
+    } else if (page) {
+        navigateTo(page);
     }
 }
 
